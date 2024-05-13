@@ -1,0 +1,10 @@
+{
+    "extracted_properties": {
+        "delivery_terms": "Users can access the Tally Cloud from a Web Browser or Remote app. Each user has a separate user ID, and all locations' data is stored in the cloud. Individual locations can only view their location data. Tally Data user ID and password remain the same. Cloud Admin has access to backup facility.",
+        "payment_terms": "Payment: 100% Advance. Cheque/Demand Draft Name: TEAM SOLUTIONS. Inclusive of GST 18%. Cloud setup service is included.",
+        "terms_conditions": "Payment: 100% Advance. Cheque/Demand Draft Name: TEAM SOLUTIONS. Inclusive of GST 18%. Cloud setup service is included.",
+        "proposal_details": "1) Cloud - Access for Tally: 10 users, Per User Amount: 7,500, Total Amount: 75,000, GST: 13,500, Total Price: 88,500. 2) Tally Data Migration for Tally Prime: 1 unit, Per Unit Amount: 2,000, Total Amount: 2,000, GST: 360, Total Price: 2,360.",
+        "proposal_implementation": "- Reactivate Multiuser license in the cloud and move data to Virtual Machine.\n- Move all locations' data to the cloud.\n- Provide initial training.\n- Provide Cloud Admin user's rights training.",
+        "key_benefits": "- Access Tally Prime securely from anywhere.\n- Collaborative work on the same data with other users.\n- Upload existing data to a virtual cloud environment.\n- Cost-effective solution for remote access to Tally Prime.\n- Reliable technology leaders in business software and cloud platforms.\n\nData Security Features:\n- End-to-end encryption for secure data.\n- Automatic backup, sync, and restore.\n- Enterprise-grade infrastructure with multiple SSD locations.\n- Account security controls with two-factor authentication.\n- Next-Generation Firewalls for superior security.\n- Brute Force Attack defender to block external attacks.\n- HTTPS secured login with valid SSL certificate.\n- Tier-4 Data centre compliances with ISO 270001, HIPPA, PCI-DSS."
+    }
+}
