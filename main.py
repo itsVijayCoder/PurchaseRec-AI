@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
-import uuid
+import uuid, json
 from typing import List
 
 from app.database.mongo import mongo_connect
@@ -10,8 +10,8 @@ from app.controllers.ingest import ingest_rp_document, ingest_p_document
 from app.controllers.analyse import execute_analysis
 
 app = FastAPI()
-mongo_client = mongo_connect()
 
+mongo_client = mongo_connect()
 mongo_database = mongo_client.get_database("procure-sense")
 mongo_collection = mongo_database.get_collection("analysis")
 
@@ -23,7 +23,7 @@ async def init_analyze(analysisName: str, analysisDescription: str, analysisTags
             "analysisId": analysisId,
             "analysisName": analysisName,
             "analysisDescription": analysisDescription,
-            "analysisTags": analysisTags
+            "analysisTags": analysisTags.split(","),
         }
         try:
             response = mongo_collection.insert_one(analysis)
@@ -81,10 +81,12 @@ async def start_analyse(analysisId: str):
         if not analysis:
             raise HTTPException(status_code=404, detail="Analysis not found")
 
-        if "requestForProposal" not in analysis or "proposals" not in analysis:
+        request_for_proposal = analysis.get("resquestForProposal")
+        proposals = analysis.get("proposals")
+
+        if request_for_proposal is None or proposals is None:
             raise HTTPException(status_code=410, detail="Request for proposal and proposals are required to start analysis")
 
-        # Start analysis
         analysis_result = execute_analysis(request_for_proposal, proposals)
 
         mongo_collection.find_one_and_update({ "analysisId": analysisId }, {"$set": {"analysisResult": analysis_result}})
@@ -96,14 +98,21 @@ async def start_analyse(analysisId: str):
     except Exception as e:
         raise HTTPException(status_code=410, detail=str(e))
 
-@app.get("/api/get-analysis", tags=["Analyse"], name="Get analysis")
+@app.post("/api/get-analysis", tags=["Analyse"], name="Get analysis")
 async def get_analysis(analysisId: str):
     try:
         analysis = mongo_collection.find_one({ "analysisId": analysisId })
-        return JSONResponse(content={
-            "message": "Analysis fetched successfully",
-            "data": analysis
-        }, status_code=200)
+        if analysis:
+            analysis['_id'] = str(analysis['_id'])
+            return JSONResponse(content={
+                "message": "Analysis fetched successfully",
+                "data": analysis
+            }, status_code=200)
+        else:
+            return JSONResponse(content={
+                "message": "Analysis not found",
+                "data": {}
+            }, status_code=404)
     
     except Exception as e:
         raise HTTPException(status_code=410, detail=str(e))

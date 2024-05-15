@@ -1,15 +1,18 @@
 import tempfile, os
 
 async def run_temp_file_generation(file):
+    try:
+        with tempfile.TemporaryDirectory(delete=False) as temp_dir:
+            temp_file_path = os.path.join(temp_dir, file.filename)
 
-    with tempfile.TemporaryDirectory() as temp_dir:
-        temp_file_path = os.path.join(temp_dir, file.filename)
-
-        with open(temp_file_path, 'w', encoding='utf-8') as temp_file:
-            content = await file.read()
-            temp_file.write(content)
-
-    return temp_file_path
+            with open(temp_file_path, 'wb') as temp_file:
+                content = await file.read()
+                temp_file.write(content)
+                
+        return temp_file_path
+        
+    except Exception as e:
+        print(f"Error generating temp file: {e}")
 
 async def run_temp_file_deletion(file_path):
     try:

@@ -12,8 +12,9 @@ from ..constants.prompt import rfp_extraction_prompt, p_extraction_prompt
 load_dotenv()
 
 class RFPScopeOfWork(BaseModel):
+    index: int = Field(description="Index of the item")
     quantity: int = Field(description="Quantity of the item")
-    description: str = Field(description="Description of the item")
+    description: str = Field(description="Description of the item or service")
 
 class PScopeOfWork(BaseModel):
     quantity: int = Field(description="Quantity of the item")
