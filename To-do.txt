@@ -1,0 +1,7 @@
+Move routes in to routers folder
+Add middleware with x-api-token
+Authentication API 
+    1. Login
+    2. Signup
+Rewrite Upload API
+Analysis Edit API

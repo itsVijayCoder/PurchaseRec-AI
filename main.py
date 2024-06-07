@@ -1,29 +1,64 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import uuid, json
 from typing import List
 
 from app.database.mongo import mongo_connect
+from app.database.redis import redis_connect
 from app.helpers.run import run_temp_file_generation, run_temp_file_deletion
 from app.controllers.ingest import ingest_rp_document, ingest_p_document
 from app.controllers.analyse import execute_analysis
 
 app = FastAPI()
 
+origins = [ "http://localhost", "http://localhost:8000" ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 mongo_client = mongo_connect()
+redis_client = redis_connect()
+
 mongo_database = mongo_client.get_database("procure-sense")
+user_collection = mongo_database.get_collection("user")
 mongo_collection = mongo_database.get_collection("analysis")
 
-@app.post("/api/init-analyse", tags=["Analyse"], name="Initialize analysis")
-async def init_analyze(analysisName: str, analysisDescription: str, analysisTags: list):
+@app.post("/api/v1/login", tags=["Authentication"], name="Home")
+async def login():
     try:
+        return JSONResponse(content={"message": "User logged in successfully"}, status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=410, detail=str(e))
+
+@app.post("/api/v1/register", tags=["Authentication"], name="Register")
+async def register():
+    return JSONResponse(content={"message": "User registered successfully"}, status_code=200)
+
+
+class InitAnalysis(BaseModel):
+    analysisName: str
+    analysisDescription: str
+    analysisTags: List[str]
+
+@app.post("/api/init-analyse", tags=["Analyse"], name="Initialize analysis")
+async def init_analyze(payload: InitAnalysis):
+    try:
+        mongo_collection = mongo_database.get_collection("analysis")
+        payload = payload.dict()
         analysisId = str(uuid.uuid4())
         analysis = {
             "analysisId": analysisId,
-            "analysisName": analysisName,
-            "analysisDescription": analysisDescription,
-            "analysisTags": analysisTags.split(","),
+            "analysisName": payload.get('analysisName'),
+            "analysisDescription": payload.get('analysisDescription'),
+            "analysisTags": payload.get('analysisTags'),
         }
         try:
             response = mongo_collection.insert_one(analysis)
@@ -42,7 +77,7 @@ async def ingest_rp(analysisId: str, file: UploadFile):
         request_for_proposal = ingest_rp_document(temp_file_path)
         await run_temp_file_deletion(temp_file_path)
 
-        mongo_collection.find_one_and_update({ "analysisId": analysisId }, {"$set": {"resquestForProposal": request_for_proposal}})
+        mongo_collection.find_one_and_update({ "namespace": "poc" }, {"$set": {"result": request_for_proposal}})
 
         return JSONResponse(content={
             "message": "Request for proposal ingested successfully",

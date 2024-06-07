@@ -1,11 +1,13 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from dotenv import load_dotenv
+import os
 
-uri = "mongodb+srv://susanoox:gETm2aR5YOM8vczW@developement.yojlbid.mongodb.net/?retryWrites=true&w=majority&appName=Developement"
+load_dotenv()
 
 def mongo_connect():
     try:
-        client = MongoClient(uri, server_api=ServerApi('1'))
+        client = MongoClient(os.getenv("MONGO_URI"), server_api=ServerApi('1'))
         client.admin.command('ping')
         print("Successfully connected to MongoDB !")
         return client

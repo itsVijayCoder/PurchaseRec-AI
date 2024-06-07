@@ -26,20 +26,20 @@ class PScopeOfWork(BaseModel):
 
 class RFPResponse(BaseModel):
     title: str = Field(description="Title of the request for proposal")
-    delivery_terms: List[str] = Field(description="Detailed list of all delivery terms mentioned in this document for the reader. Spare no details")
-    payment_terms: List[str] = Field(description="Detailed list of all payment terms mentioned in this document for the reader. Spare no details")
-    terms_conditions: List[str] = Field(description="Detailed list of all terms and conditions mentioned in this document for the reader. Spare no details")
-    scope_of_work: List[RFPScopeOfWork] = Field(description="Detailed list of all scope of work, deliverables items, project requirements and scope of service mentioned in this document. Spare no details")
+    deliveryTerms: List[str] = Field(description="Detailed list of all delivery terms mentioned in this document for the reader. Spare no details")
+    paymentTerms: List[str] = Field(description="Detailed list of all payment terms mentioned in this document for the reader. Spare no details")
+    termsConditions: List[str] = Field(description="Detailed list of all terms and conditions mentioned in this document for the reader. Spare no details")
+    scopeOfWork: List[RFPScopeOfWork] = Field(description="Detailed list of all scope of work, deliverables items, project requirements and scope of service mentioned in this document. Spare no details")
 
 class PResponse(BaseModel):
     title: str = Field(description="Title of the proposal")
-    company_name: str = Field(description="Name of the company that submitted the proposal")
-    delivery_terms: List[str] = Field(description="Detailed list of all delivery terms mentioned in this document for the reader. Spare no details")
-    payment_terms: List[str] = Field(description="Detailed list of all payment terms mentioned in this document for the reader. Spare no details")
-    terms_conditions: List[str] = Field(description="Detailed list of all terms and conditions mentioned in this document for the reader. Spare no details")
-    scope_of_work: List[PScopeOfWork] = Field(description="Detailed list of all offered solutions, products mentioned in this document along with there pricing details. Spare no details")
-    proposal_implementation: List[str] = Field(description="Detailed list of implementation plan, timeline, milestones and other details mentioned in this document. Spare no details")
-    key_benefits: List[str] = Field(description="Detailed list of all benefits, features of the solutions and products mentioned in the document. Spare no details")
+    companyName: str = Field(description="Name of the company that submitted the proposal")
+    deliveryTerms: List[str] = Field(description="Detailed list of all delivery terms mentioned in this document for the reader. Spare no details")
+    paymentTerms: List[str] = Field(description="Detailed list of all payment terms mentioned in this document for the reader. Spare no details")
+    termsConditions: List[str] = Field(description="Detailed list of all terms and conditions mentioned in this document for the reader. Spare no details")
+    scopeOfWork: List[PScopeOfWork] = Field(description="Detailed list of all offered solutions, products mentioned in this document along with there pricing details. Spare no details")
+    proposalImplementation: List[str] = Field(description="Detailed list of implementation plan, timeline, milestones and other details mentioned in this document. Spare no details")
+    keyBenefits: List[str] = Field(description="Detailed list of all benefits, features of the solutions and products mentioned in the document. Spare no details")
 
 def ingest_rp_document(file_path):
     request_for_proposal = pdf_reader(file_path)
