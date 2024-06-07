@@ -1,10 +1,8 @@
 from apiflask import APIFlask
-from flask import request
-from markupsafe import escape
+from blueprints.auth import auth_blueprint
 
 app = APIFlask(__name__)
+app.register_blueprint(auth_blueprint, url_prefix='/api/v1')
 
-@app.route('/')
-def hello():
-    name = request.args.get('name', 'Human')
-    return f'Hello, {escape(name)}'
+if __name__ == '__main__': 
+    app.run(host = '127.0.0.1', port = 8080, debug = True)
