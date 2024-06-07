@@ -3,6 +3,7 @@ from apiflask.fields import String, Email
 from databases.mongo import mongo_instance
 from databases.redis import redis_instance
 import uuid
+from flask import request
 from helpers.jwt import decode_jwt, encode_jwt
 
 auth_blueprint = APIBlueprint('auth', __name__, tag='Authentication')
@@ -90,3 +91,12 @@ def register(json_data):
     except Exception as e:
         return { 'message': 'Error while registering user.', 'error': str(e) }, 500
 
+@auth_blueprint.post('/logout')
+def logout():
+    try:
+        session_token = request.headers.get('Authorization').replace('Bearer ', '') 
+        temp = redis_client.delete(f'ps-session:{session_token}')
+        return { 'message': 'Logout successful.' }, 200
+
+    except Exception as e:
+        return { 'message': 'Error while logging out.', 'error': str(e) }, 500
