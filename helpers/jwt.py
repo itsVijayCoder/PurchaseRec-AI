@@ -1,6 +1,5 @@
 import jwt, os
 from dotenv import load_dotenv
-from base64 import b64decode
 
 load_dotenv()
 
