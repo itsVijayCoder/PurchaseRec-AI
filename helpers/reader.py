@@ -10,9 +10,3 @@ def pdf_reader(file_path):
 
     except Exception as e:
         print(f"Error reading PDF file: {e}")
-
-        
-    
-        
-
-

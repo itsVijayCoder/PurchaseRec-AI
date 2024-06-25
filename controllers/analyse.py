@@ -5,7 +5,7 @@ from typing import List
 from langchain_openai import ChatOpenAI
 from langchain.output_parsers.openai_functions import JsonOutputFunctionsParser
 
-from ..constants.prompt import analyse_prompt
+from helpers.constant import analyse_prompt
 
 class Proposal(BaseModel):
     index: int = Field(description="Index of the proposal in the list of proposals provided. Index starts from 0")
@@ -26,7 +26,7 @@ class FinancialAnalysis(BaseModel):
     maxQuote: float = Field(description="Maximum total price of the proposals")
 
 class AnalyseResponse(BaseModel):
-    proposalAnalysis: List[Proposal] = Field(description="List of proposals anlaysis")
+    proposalAnalyse: List[Proposal] = Field(description="List of proposals anlaysis")
     ranking: List[int] = Field(description="Overall ranking of the proposals. Identify the proposal by index in the list where index starts from 0")
     financialRanking: List[int] = Field(description="Overall ranking of the proposals in terms of finanical aspects. Identify the proposal by index in the list where index starts from 0")
     riskAssessmentRanking: List[int] = Field(description="Overall ranking of the proposal in terms of risk assessment. Identify the proposal by index in the list where index starts from 0")
@@ -36,9 +36,9 @@ class AnalyseResponse(BaseModel):
     reasonForOverallSelection: List[str] = Field(description="Reason for selecting the overall suitable proposal")
     reasonForFinancialSelection: List[str] = Field(description="Reason for selecting the overall financially suitable proposal")
     reasonForRiskAssessmentSelection: List[str] =  Field(description="Reason for selecting best suitable proposal in terms of risk assessment")
-    financialAnalysis: FinancialAnalysis = Field(description="Financial analysis of the proposals")
+    financialAnalyse: FinancialAnalysis = Field(description="Financial analysis of the proposals")
 
-def execute_analysis(request_for_proposal, proposals):
+def execute_analyse(request_for_proposal, proposals):
     stringified_proposals = ''
     for idx in range(len(proposals)):
         stringified_proposals += f"proposal_{idx + 1}: {proposals[idx]}\n"
