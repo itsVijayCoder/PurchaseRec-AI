@@ -3,10 +3,12 @@ from apiflask.fields import String, Email
 from databases.mongo import mongo_instance
 from databases.redis import redis_instance
 import uuid
+from flask_cors import CORS
 from flask import request
 from helpers.jwt import decode_jwt, encode_jwt
 
 auth_blueprint = APIBlueprint('auth', __name__, tag='Authentication')
+CORS(auth_blueprint)
 
 mongo_client = mongo_instance()
 mongo_database = mongo_client.get_database("procure-sense")
@@ -54,6 +56,7 @@ def login(json_data):
         return { 'message': 'Login successful.', 'data': {'token': session_token }}, 200
 
     except Exception as e:
+        print(e)
         return { 'message': 'Error while logging in.', 'error': str(e) }, 500
 
 @auth_blueprint.post('/register')

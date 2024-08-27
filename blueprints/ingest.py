@@ -95,12 +95,15 @@ def ingest_rp(form_and_files_data, headers_data):
 def ingest_proposal(form_and_files_data, headers_data):
     try:
         files = form_and_files_data['file']
+        print('files len', len(files))
         id = form_and_files_data['id']
+        print('id: ', id)
         user_id = request.user['id']
         proposal_analyse = []
 
         for file in files:
-            file_path = run_file_generation(file)
+            print('file', file)
+            file_path = run_file_generation(file, True)
             
             analyse = ingest_p_document(file_path)
             proposal_analyse.append(analyse)
