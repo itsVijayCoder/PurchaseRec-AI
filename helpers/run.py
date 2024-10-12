@@ -8,7 +8,7 @@ def run_file_generation(file, isProposal=False):
                 filename = file.filename.split('/')[-1]
                 temp_file_path = os.path.join(temp_dir, filename)
             with open(temp_file_path, 'wb') as temp_file:
-                content = file.file.read()
+                content = file.read()
                 temp_file.write(content)
                 
         return temp_file_path
