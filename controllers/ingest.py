@@ -60,27 +60,73 @@ class PResponse(BaseModel):
     keyBenefits: List[str] = Field(description="Detailed list of all benefits, features of the solutions and products mentioned in the document. Spare no details")
 
 def ingest_rp_document(file_path):
-    request_for_proposal = pdf_reader(file_path)
+    try:
+        request_for_proposal = pdf_reader(file_path)
+        
+        if not request_for_proposal or len(request_for_proposal.strip()) < 100:
+            print(f"Warning: Extracted text is too short or empty: '{request_for_proposal[:100]}...'")
+            raise Exception("The PDF text extraction returned insufficient content")
 
-    openai_functions = [convert_to_openai_function(RPResponse)]
-    model = ChatOpenAI(model="gpt-4o", temperature = 0, max_tokens = 4000)
-    prompt = ChatPromptTemplate.from_messages(
-        [("system", rp_extraction_prompt)]
-    )
-    parser = JsonOutputFunctionsParser()
-    chain = prompt | model.bind(functions=openai_functions) | parser
-    response = chain.invoke({"request_for_proposal": request_for_proposal})
-    return response
+        print(f"Extracted {len(request_for_proposal)} characters from PDF")
+        
+        openai_functions = [convert_to_openai_function(RPResponse)]
+        model = ChatOpenAI(model="gpt-4o", temperature=0, max_tokens=4000)
+        prompt = ChatPromptTemplate.from_messages(
+            [("system", rp_extraction_prompt)]
+        )
+        parser = JsonOutputFunctionsParser()
+        
+        print("Sending request to OpenAI API...")
+        chain = prompt | model.bind(functions=openai_functions) | parser
+        
+        try:
+            response = chain.invoke({"request_for_proposal": request_for_proposal})
+            print("Successfully received and parsed OpenAI response")
+            return response
+        except Exception as api_error:
+            print(f"OpenAI API or parsing error: {api_error}")
+            import traceback
+            print(traceback.format_exc())
+            raise Exception(f"Error processing document with AI: {str(api_error)}")
+            
+    except Exception as e:
+        print(f"Error in ingest_rp_document: {e}")
+        import traceback
+        print(traceback.format_exc())
+        raise
 
 def ingest_p_document(file_path):
-    proposal = pdf_reader(file_path)
+    try:
+        proposal = pdf_reader(file_path)
+        
+        if not proposal or len(proposal.strip()) < 100:
+            print(f"Warning: Extracted text is too short or empty: '{proposal[:100]}...'")
+            raise Exception("The PDF text extraction returned insufficient content")
+            
+        print(f"Extracted {len(proposal)} characters from PDF")
 
-    openai_functions = [convert_to_openai_function(PResponse)]
-    model = ChatOpenAI(model="gpt-4o", temperature=0, max_tokens=4000)
-    prompt = ChatPromptTemplate.from_messages(
-        [("system", p_extraction_prompt)]
-    )
-    parser = JsonOutputFunctionsParser()
-    chain = prompt | model.bind(functions=openai_functions) | parser
-    response = chain.invoke({"proposal": proposal})
-    return response
+        openai_functions = [convert_to_openai_function(PResponse)]
+        model = ChatOpenAI(model="gpt-4o", temperature=0, max_tokens=4000)
+        prompt = ChatPromptTemplate.from_messages(
+            [("system", p_extraction_prompt)]
+        )
+        parser = JsonOutputFunctionsParser()
+        
+        print("Sending request to OpenAI API...")
+        chain = prompt | model.bind(functions=openai_functions) | parser
+        
+        try:
+            response = chain.invoke({"proposal": proposal})
+            print("Successfully received and parsed OpenAI response")
+            return response
+        except Exception as api_error:
+            print(f"OpenAI API or parsing error: {api_error}")
+            import traceback
+            print(traceback.format_exc())
+            raise Exception(f"Error processing document with AI: {str(api_error)}")
+            
+    except Exception as e:
+        print(f"Error in ingest_p_document: {e}")
+        import traceback
+        print(traceback.format_exc())
+        raise
