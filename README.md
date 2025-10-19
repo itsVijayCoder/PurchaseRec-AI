@@ -56,6 +56,21 @@ This application provides purchase recommendation capabilities through several e
    python app.py
    ```
 
+## Google Vision OCR
+
+- Purpose: Adds a fallback OCR when a PDF page has no extractable text (scanned PDFs).
+- Setup:
+  - Enable the Vision API in your Google Cloud project and create a service account with sufficient permissions (e.g., `roles/Cloud Vision API User`).
+  - Download the service account key JSON and place it in the project root (e.g., `google-vision-key.json`).
+  - Set the environment variable `GOOGLE_APPLICATION_CREDENTIALS`:
+    - Docker: `GOOGLE_APPLICATION_CREDENTIALS=/app/google-vision-key.json` (repo is mounted at `/app`).
+    - Local: `GOOGLE_APPLICATION_CREDENTIALS=./google-vision-key.json`.
+- Dependencies: `google-cloud-vision` is included in `requirements.txt`.
+- Behavior:
+  - Uses `pdfplumber` for native text extraction.
+  - If a page returns empty text, renders the page via `pypdfium2` and runs Google Vision `document_text_detection`.
+  - Aggregates text across all pages seamlessly.
+
 ## API Endpoints
 
 - `/api/v1/` - Authentication endpoints
@@ -73,4 +88,4 @@ docker-compose down
 To stop and remove volumes:
 ```bash
 docker-compose down -v
-``` 
+```
